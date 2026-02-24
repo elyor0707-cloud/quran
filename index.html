@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<meta name="theme-color" content="#020617"/>
+<title>Qur'on Ilova</title>
+
+<style>
+body{margin:0;font-family:system-ui;background:#0f172a;color:#fff}
+header{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:#020617;position:sticky;top:0}
+.logo{font-weight:700}
+.hbtn{background:#1e293b;border:none;color:#fff;padding:8px 12px;border-radius:8px;margin-left:6px}
+main{padding:16px;max-width:800px;margin:auto}
+.card{background:#020617;border:1px solid #1e293b;padding:16px;border-radius:16px;margin-bottom:14px}
+.sh-ar{font-size:26px;line-height:1.7}
+.btn{background:#22c55e;border:none;color:#022c22;padding:10px 14px;border-radius:10px;margin-top:10px}
+select{padding:8px;border-radius:8px;background:#020617;color:#fff;border:1px solid #1e293b}
+</style>
+</head>
+<body>
+
+<header>
+<div class="logo">📖 Qur'on App</div>
+<div>
+<button class="hbtn" onclick="renderQuran()">Qur'on</button>
+<button class="hbtn" onclick="renderAlphabet()">ا</button>
+<button class="hbtn" onclick="renderRules()">📘</button>
+<button class="hbtn" onclick="freeMode()">🕊</button>
+</div>
+</header>
+
+<main id="main"></main>
+<audio id="aud"></audio>
+
+<script>
+const main=document.getElementById('main');
+const aud=document.getElementById('aud');
+
+/* ===================== QURON DATA ===================== */
+const QURAN=[
+{name:'Al-Fotiha',ayas:[
+{a:'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ',u:'Bismillahir rohmanir rohim'},
+{a:'الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ',u:'Alhamdu lillahi robbil alamin'},
+{a:'الرَّحْمَٰنِ الرَّحِيمِ',u:'Ar rohmanir rohim'},
+{a:'مَالِكِ يَوْمِ الدِّينِ',u:'Maliki yawmid din'},
+{a:'إِيَّاكَ نَعْبُدُ',u:'Iyyaka na\'budu'}
+]}
+];
+
+function renderQuran(){
+main.innerHTML=`
+<div class="card">
+<h2>Qur'on o'qish</h2>
+<select id="surah"></select>
+</div>
+<div id="ayat"></div>`;
+
+const s=document.getElementById('surah');
+QURAN.forEach((x,i)=>s.innerHTML+=`<option value="${i}">${x.name}</option>`);
+s.onchange=()=>renderAyat(s.value);
+renderAyat(0);
+}
+
+function renderAyat(i){
+const sura=QURAN[i];
+const div=document.getElementById('ayat');
+div.innerHTML='';
+sura.ayas.forEach(ay=>{
+const el=document.createElement('div');
+el.className='card';
+el.innerHTML=`
+<div class="sh-ar">${ay.a}</div>
+<div>${ay.u}</div>
+<button class="btn" onclick="playAI('${ay.a}')">🤖 AI Qori</button>`;
+div.appendChild(el);
+});
+}
+
+/* ===================== ARABIC ALPHABET ===================== */
+const ARABIC_LETTERS=[
+{ar:"ا",lat:"Alif",tip:"Choʻziq A"},
+{ar:"ب",lat:"Ba",tip:"B"},
+{ar:"ت",lat:"Ta",tip:"T"},
+{ar:"ث",lat:"Tha",tip:"Til orasidan"},
+{ar:"ج",lat:"Jim",tip:"J"},
+{ar:"ح",lat:"Ha",tip:"Bo‘g‘iz H"},
+{ar:"خ",lat:"Kho",tip:"X"},
+{ar:"د",lat:"Dal",tip:"D"},
+{ar:"ر",lat:"Ro",tip:"R"},
+{ar:"س",lat:"Sin",tip:"S"},
+{ar:"ش",lat:"Shin",tip:"SH"},
+{ar:"ص",lat:"Sod",tip:"Qalin S"},
+{ar:"ض",lat:"Dod",tip:"Qiyin harf"},
+{ar:"ط",lat:"To",tip:"Qalin T"},
+{ar:"ظ",lat:"Zo",tip:"Qalin Z"},
+{ar:"ع",lat:"Ayn",tip:"Bo‘g‘iz"},
+{ar:"غ",lat:"G‘ayn",tip:"G‘"},
+{ar:"ف",lat:"Fa",tip:"F"},
+{ar:"ق",lat:"Qof",tip:"Q"},
+{ar:"ك",lat:"Kaf",tip:"K"},
+{ar:"ل",lat:"Lam",tip:"L"},
+{ar:"م",lat:"Mim",tip:"M"},
+{ar:"ن",lat:"Nun",tip:"N"},
+{ar:"ه",lat:"Ha",tip:"H"},
+{ar:"و",lat:"Vav",tip:"V/U"},
+{ar:"ي",lat:"Ya",tip:"Y"}
+];
+
+function renderAlphabet(){
+main.innerHTML=`
+<div class="card"><h2>Arab alifbosi</h2></div>
+<div class="card">${ARABIC_LETTERS.map(l=>`
+<div style="display:flex;gap:20px;align-items:center;margin-bottom:12px">
+<div style="font-size:34px">${l.ar}</div>
+<div><b>${l.lat}</b><div style="opacity:.7">${l.tip}</div></div>
+</div>`).join('')}</div>`;
+}
+
+/* ===================== RULES ===================== */
+function renderRules(){
+main.innerHTML=`
+<div class="card">
+<h2>Qur'on o‘qish qoidalari</h2>
+<h3>Harakatlar</h3>
+<p>Fatha = a | Kasra = i | Damma = u</p>
+<h3>Madd</h3>
+<p>Cho‘zish: aa ii uu</p>
+<h3>Qalin harflar</h3>
+<p>ص ض ط ظ ق غ خ</p>
+<h3>Qalqala</h3>
+<p>ق ط ب ج د</p>
+</div>`;
+}
+
+/* ===================== AI QORI ===================== */
+function playAI(text){
+const url=`https://api.streamelements.com/kappa/v2/speech?voice=Brian&text=${encodeURIComponent(text)}`;
+aud.src=url;
+aud.play();
+}
+
+/* ===================== FREE MODE ===================== */
+function freeMode(){
+alert("Mustaqil Qur'on o‘qish rejimi yoqildi 🌙");
+localStorage.setItem('free_mode','1');
+}
+
+renderQuran();
+</script>
+</body>
+</html>
